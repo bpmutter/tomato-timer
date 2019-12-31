@@ -5,8 +5,9 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Tomato Time</title>
+    <title>Tomato Timer</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://kit.fontawesome.com/07987f6265.js" crossorigin="anonymous"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 
 
@@ -18,29 +19,42 @@
 
         <section id="session">
             <h2>Session</h2>
-            <button class="increment" id="session-decrease">
-                <</button> <span class="time" id="session-time">25:00</span>
-                    <button class="increment" id="session-increase">></button>
+            <div>
+                <button class="increment" id="session-decrease">
+                    <i class="fas fa-sort-down"></i>
+                </button>
+                <span class="time"><span id="session-time">25</span>:00</span>
+                <button class="increment" id="session-increase">
+                    <i class="fas fa-sort-up"></i>
+                </button>
+            </div>
         </section>
 
         <section id="break">
             <h2>Break</h2>
-            <button class="increment" id="break-decrease">
-                <</button> <span class="time" id="break-time">5:00</span>
-                    <button class="increment" id="break-increase">></button>
+            <div>
+                <button class="increment" id="break-decrease">
+                    <i class="fas fa-sort-down"></i>
+                </button>
+                <span class="time"><span id="break-time">5</span>:00</span>
+                <button class="increment" id="break-increase">
+                    <i class="fas fa-sort-up"></i>
+                </button>
+            </div>
+
         </section>
 
         <section id="active-time">
-            25:00
+            <span id="minutes">25</span>:<span id="seconds">00</span>
         </section>
         <section id="control-buttons">
-            <button class="control" id="reset">reset</button>
+            <button class="control" id="reset" onclick="reset()">reset</button>
             <button class="control" id="play-pause">play/pause</button>
             <button class="control" id="stop">stop</button>
         </section>
     </section>
 
-    <script type="text/javascript" src="script.js"></script>
+    <script type="text/javascript" src="script-3.js"></script>
 </body>
 
 </html>
