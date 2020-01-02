@@ -11,6 +11,11 @@ incrementSessionDown.addEventListener("click", () => {
         session.innerHTML--;
     }
     else return;
+
+    if (timerRunning == false) {
+        document.getElementById("minutes").innerHTML = session.innerHTML < 10 ? "0" + session.innerHTML : session.innerHTML;
+
+    }
 })
 const incrementSessionUp = document.getElementById("session-increase");
 incrementSessionUp.addEventListener("click", () => {
@@ -21,8 +26,12 @@ incrementSessionUp.addEventListener("click", () => {
 
         session.innerHTML++;
     }
-
     else return;
+
+    if (timerRunning == false) {
+        document.getElementById("minutes").innerHTML = session.innerHTML < 10 ? "0" + session.innerHTML : session.innerHTML;
+
+    }
 });
 
 //incrementing the break timer
@@ -133,27 +142,32 @@ function calculate(sessionEnd, breakEnd) {
     let nowTime = new Date().getTime();
 
     let timeRemaining = (breakEnd - nowTime) / 1000; //in seconds
-    console.log("time remaining" + timeRemaining);
     let sessionRemaining = (sessionEnd - nowTime) / 1000; //in seconds
-    console.log("session end: " + sessionEnd);
+    console.log("session end end: " + sessionEnd + "s");
+    console.log("time remaining " + timeRemaining);
 
     if (sessionRemaining >= 0) {
-        console.log("time remaining " + timeRemaining);
-        console.log("session remaining " + sessionRemaining);
         minutes = Math.floor(sessionRemaining / 60)
         seconds = Math.floor(sessionRemaining % 60);
         document.getElementById("minutes").innerHTML = minutes < 10 ? "0" + minutes : minutes;
         document.getElementById("seconds").innerHTML = seconds < 10 ? "0" + seconds : seconds;
+        console.log("session remaining " + sessionRemaining)
     }
-    else if (timeRemaining > 0 || sessionEnd == startTime) {
+    else if (timeRemaining > 0) {
+        console.log("We in here")
         activeTimeDisplay.style.color = "green";
-        minutes = Math.floor(timeRemaining / 60);
-        seconds = Math.floor(timeRemaining % 60) + 1;
+        minutes = Math.floor(timeRemaining / 60) > 0 ? Math.floor(timeRemaining / 60) : "0";
+        seconds = Math.floor(timeRemaining % 60) > 0 ? Math.floor(timeRemaining % 60) : "0";
         document.getElementById("minutes").innerHTML = minutes < 10 ? "0" + minutes : minutes;
         document.getElementById("seconds").innerHTML = seconds < 10 ? "0" + seconds : seconds;
     }
-    else {
+    else if (timeRemaining <= 0) {
         alert("time's up!")
+        clearInterval(timer);
+        document.getElementById("minutes").innerHTML = session.innerHTML;
+        document.getElementById("seconds").innerHTML = "00";
+        timerRunning = false;
+        activeTimeDisplay.style.color = "#404040";
 
         return;
     }
