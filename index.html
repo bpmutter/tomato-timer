@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- Made by Ben Perlmutter as part of the Odin Project -->
-<!-- December 2019 -->
+<!-- December 2019 - January 2020 -->
 <html lang="en" dir="ltr">
 
 <head>
@@ -15,30 +15,34 @@
 
 <body>
     <section id="timer-frame">
-        <h1>Tomato Timer</h1>
+        <div id="title-box">
+            <img src="tomato-logo.png" id="tomato-logo">
+            <h1>Tomato Timer</h1>
+        </div>
+
 
         <section id="session">
             <h2>Session</h2>
-            <div>
+            <div class="time-holder">
                 <button class="increment" id="session-decrease">
-                    <i class="fas fa-sort-down"></i>
+                    <i class="fas fa-sort-down down"></i>
                 </button>
                 <span class="time"><span id="session-time">25</span>:00</span>
                 <button class="increment" id="session-increase">
-                    <i class="fas fa-sort-up"></i>
+                    <i class="fas fa-sort-up up"></i>
                 </button>
             </div>
         </section>
 
         <section id="break">
             <h2>Break</h2>
-            <div>
+            <div class="time-holder">
                 <button class="increment" id="break-decrease">
-                    <i class="fas fa-sort-down"></i>
+                    <i class="fas fa-sort-down down"></i>
                 </button>
                 <span class="time"><span id="break-time">5</span>:00</span>
                 <button class="increment" id="break-increase">
-                    <i class="fas fa-sort-up"></i>
+                    <i class="fas fa-sort-up up"></i>
                 </button>
             </div>
 
@@ -48,13 +52,13 @@
             <span id="minutes">25</span>:<span id="seconds">00</span>
         </section>
         <section id="control-buttons">
-            <button class="control" id="reset" onclick="reset()">reset</button>
-            <button class="control" id="play-pause">play/pause</button>
-            <button class="control" id="stop">stop</button>
+            <button class="control" id="reset" onclick="reset()"><i class="fas fa-redo-alt"></i></button>
+            <button class="control" id="play-pause"><i class="fas fa-play"></i>/<i class="fas fa-pause"></i></button>
+            <button class="control" id="stop" onclick="stop()"><i class="fas fa-stop"></i></button>
         </section>
     </section>
 
-    <script type="text/javascript" src="script-3.js"></script>
+    <script type="text/javascript" src="script.js"></script>
 </body>
 
 </html>

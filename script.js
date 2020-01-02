@@ -1,137 +1,166 @@
+let activeTimeDisplay = document.getElementById("active-time");
+let activeTimeOrig = activeTimeDisplay;
 
 
-let timeWorking = 25; //in minutes
-let timeBreak = 5; //in minutes
-let totTime = (timeWorking + timeBreak) * 60
+//incrementing the session timer
+let session = document.getElementById("session-time");
+const incrementSessionDown = document.getElementById("session-decrease");
+incrementSessionDown.addEventListener("click", () => {
+    if (session.innerHTML > 0) {
 
+        session.innerHTML--;
+    }
+    else return;
+})
+const incrementSessionUp = document.getElementById("session-increase");
+incrementSessionUp.addEventListener("click", () => {
+    if (session.innerHTML > 59) {
+        alert("chill, an hour is enough!");
+    }
+    else if (session.innerHTML >= 0) {
 
-let timeKeeper = function (sessionTime, breakTime) {
-
-    let startTime = getTimeSeconds(); //all the elapsed minutes in the day
-    let totTime = sessionTime + breakTime;
-    totTime *= 60; //time in seconds
-    let endTime = startTime + totTime;
-
-    console.log("start time: " + startTime + ", tot time : " + totTime + ", endtime: " + endTime);
-
-    for (let i = startTime; i <= endTime; i = getTimeSeconds()) {
-        let timeElapsed = getTimeSeconds() - startTime;
-        setInterval(console.log(timeElapsed), 100000);
+        session.innerHTML++;
     }
 
+    else return;
+});
+
+//incrementing the break timer
+let rest = document.getElementById("break-time");
+const incrementBreakDown = document.getElementById("break-decrease");
+incrementBreakDown.addEventListener("click", () => {
+    if (rest.innerHTML > 0) {
+
+        rest.innerHTML--;
+    }
+    else return;
+})
+const incrementBreakUp = document.getElementById("break-increase");
+incrementBreakUp.addEventListener("click", () => {
+    if (rest.innerHTML > 14) {
+        alert("chill, 15 minutes is enough!");
+    }
+    else if (rest.innerHTML >= 0) {
+
+        rest.innerHTML++;
+    }
+    else return;
+})
+
+let timer;
+function reset() {
+    clearInterval(timer);
+    session.innerHTML = 25;
+    rest.innerHTML = 5;
+    document.getElementById("minutes").innerHTML = session.innerHTML;
+    document.getElementById("seconds").innerHTML = "00";
+    timerRunning = false;
+    activeTimeDisplay.style.color = "#404040";
+}
+function stop() {
+    clearInterval(timer);
+    document.getElementById("minutes").innerHTML = session.innerHTML;
+    document.getElementById("seconds").innerHTML = "00";
+    timerRunning = false;
+    activeTimeDisplay.style.color = "#404040";
+}
+
+let timerRunning = false;
+let resumeFunctionActivation = false;
+document.getElementById("play-pause").addEventListener("click", () => {
+
+    if (timerRunning == false) {
+        if (resumeFunctionActivation == false) {
+            runTimer(session.innerHTML, rest.innerHTML);
+            timerRunning = true;
+            resumeFunctionActivation = true;
+        }
+        else {
+            resumeTimer(session.innerHTML, rest.innerHTML);
+            timerRunning = true;
+            resumeFunctionActivation = false;
+        }
+
+    }
+    else if (timerRunning == true) {
+
+        clearInterval(timer);
+        timerRunning = false;
+        resumeFunctionActivation = true;
+    }
+
+});
+
+
+function runTimer(sessionTime, breakTime) {
+    activeTimeDisplay.style.color = "#404040";
+    sessionTime *= 60000; //minutes to miliseconds
+    breakTime *= 60000; //minutes to miliseconds
+
+    //resume here. idk what i was doing..but we'll figure this out. i think today!
+
+    let startTime = new Date().getTime();
+    let sessionEndTime = startTime + sessionTime;
+    let totEndTime = sessionEndTime + breakTime;
+
+    timer = setInterval(calculate, 1000, sessionEndTime, totEndTime);
+
+}
+
+function resumeTimer(sessionTime, breakTime) {
+    sessionTime *= 60000; //minutes to miliseconds
+    breakTime *= 60000; //minutes to miliseconds
+
+    let minutesLeft = parseInt(document.getElementById("minutes").innerHTML) * 60000; //minutes to miliseconds
+    let secondsLeft = parseInt(document.getElementById("seconds").innerHTML) * 1000; //seconds to miliseconds
+    let timeLeft = minutesLeft + secondsLeft;
+
+    let startTime = new Date().getTime();
+    let endTime = startTime + timeLeft;
+    let totEndTime = endTime + breakTime;
+    if (activeTimeDisplay.style.color == "green") { //this means that it's already on the break, and can ignore session
+
+        timer = setInterval(calculate, 1000, 0, endTime);
+    }
+    else {
+
+        timer = setInterval(calculate, 1000, endTime, totEndTime);
+    }
+}
+
+function calculate(sessionEnd, breakEnd) {
+    let minutes, seconds;
+    let nowTime = new Date().getTime();
+
+    let timeRemaining = (breakEnd - nowTime) / 1000; //in seconds
+    console.log("time remaining" + timeRemaining);
+    let sessionRemaining = (sessionEnd - nowTime) / 1000; //in seconds
+    console.log("session end: " + sessionEnd);
+
+    if (sessionRemaining >= 0) {
+        console.log("time remaining " + timeRemaining);
+        console.log("session remaining " + sessionRemaining);
+        minutes = Math.floor(sessionRemaining / 60)
+        seconds = Math.floor(sessionRemaining % 60);
+        document.getElementById("minutes").innerHTML = minutes < 10 ? "0" + minutes : minutes;
+        document.getElementById("seconds").innerHTML = seconds < 10 ? "0" + seconds : seconds;
+    }
+    else if (timeRemaining > 0 || sessionEnd == startTime) {
+        activeTimeDisplay.style.color = "green";
+        minutes = Math.floor(timeRemaining / 60);
+        seconds = Math.floor(timeRemaining % 60) + 1;
+        document.getElementById("minutes").innerHTML = minutes < 10 ? "0" + minutes : minutes;
+        document.getElementById("seconds").innerHTML = seconds < 10 ? "0" + seconds : seconds;
+    }
+    else {
+        alert("time's up!")
+
+        return;
+    }
 }
 
 
-let getTimeSeconds = function () {
-    let minutesNow = new Date().getMinutes();
-    let hoursNow = new Date().getHours();
-    let secondsNow = new Date().getSeconds();
-    let timeSeconds = secondsNow + minutesNow * 60 + hoursNow * 3600;
-    return timeSeconds;
-}
-timeKeeper(25, 5)
-
-//Decrement function decrement the value.
-// function decrement(mins) {
-//     let minutes = document.getElementById(mins).value;
-//     let seconds = minutes * 60;
-//     console.log(minutes + ":" + seconds);
-
-//     // //if less than a minute remaining
-//     // //Display only seconds value.
-//     // if (seconds < 59) {
-//     //     return "0:"+seconds;
-//     // }
-
-//     // //Display both minutes and seconds
-//     // //getminutes and getseconds is used to
-//     // //get minutes and seconds
-//     // else {
-//     //     return minutes+":"+seconds;
-//     // }
-//     // //when less than a minute remaining
-//     // //colour of the minutes and seconds
-//     // //changes to red
-//     // if (mins < 1) {
-//     //     minutes.style.color = "red";
-//     //     seconds.style.color = "red";
-//     // }
-//     // //if seconds becomes zero,
-//     // //then page alert time up
-//     // if (mins < 0) {
-//     //     alert('time up');
-//     //     minutes.value = 0;
-//     //     seconds.value = 0;
-//     // }
-//     // //if seconds > 0 then seconds is decremented
-//     // else {
-//     //     secs--;
-//     //     setTimeout('decrement()', 1000);
-//     // }
-
-// }
-// decrement(sessionTime);
-
-// function getminutes() {
-//     //minutes is seconds divided by 60, rounded down
-//     mins = Math.floor(secs / 60);
-//     return mins;
-// }
-
-// function getseconds() {
-//     //take minutes remaining (as seconds) away
-//     //from total seconds remaining
-//     return secs - Math.round(mins * 60);
-// }
 
 
-// function decrement(minutes) {
 
-//     seconds = minutes * 60;
 
-//     //if less than a minute remaining
-//     //Display only seconds value.
-//     if (seconds < 59) {
-//         seconds.value = secs;
-//     }
-
-//     //Display both minutes and seconds
-//     //getminutes and getseconds is used to
-//     //get minutes and seconds
-//     else {
-//         minutes.value = getminutes();
-//         seconds.value = getseconds();
-//     }
-//     //when less than a minute remaining
-//     //colour of the minutes and seconds
-//     //changes to red
-//     if (mins < 1) {
-//         minutes.style.color = "red";
-//         seconds.style.color = "red";
-//     }
-//     //if seconds becomes zero,
-//     //then page alert time up
-//     if (mins < 0) {
-//         alert('time up');
-//         minutes.value = 0;
-//         seconds.value = 0;
-//     }
-//     //if seconds > 0 then seconds is decremented
-//     else {
-//         secs--;
-//         setTimeout('Decrement()', 1000);
-//     }
-
-// }
-
-// function getminutes() {
-//     //minutes is seconds divided by 60, rounded down
-//     mins = Math.floor(secs / 60);
-//     return mins;
-// }
-
-// function getseconds() {
-//     //take minutes remaining (as seconds) away
-//     //from total seconds remaining
-//     return secs - Math.round(mins * 60);
-// }
